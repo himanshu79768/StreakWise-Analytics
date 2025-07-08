@@ -1,0 +1,3063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySmart Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@28.2.1/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@28.2.1/styles/ag-theme-alpine.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+            --warning-color: #f8961e;
+            --danger-color: #f94144;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #2d3748;
+            --body-bg-light: #f5f7fa;
+            --body-bg-dark: #1a202c;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--body-bg-light);
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--body-bg-dark);
+            color: var(--light-color);
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .dark-mode .navbar-brand {
+            color: var(--accent-color);
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: none;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--card-bg-light);
+            height: 100%;
+        }
+
+        .dark-mode .card {
+            background-color: var(--card-bg-dark);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            font-weight: 600;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 16px 20px;
+        }
+
+        .dark-mode .card-header {
+            background-color: rgba(67, 97, 238, 0.2);
+            color: var(--light-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.1));
+        }
+
+        .dark-mode .stats-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(76, 201, 240, 0.2));
+        }
+
+        .stats-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .dark-mode .stats-value {
+            color: var(--accent-color);
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .dark-mode .stats-label {
+            color: #a0aec0;
+        }
+
+        .subject-color-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .progress-custom {
+            height: 12px;
+            border-radius: 6px;
+        }
+
+        .progress-bar-custom {
+            background-color: var(--primary-color);
+            border-radius: 6px;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--dark-color);
+            border: none;
+            padding: 12px 20px;
+            font-weight: 500;
+        }
+
+        .dark-mode .nav-tabs .nav-link {
+            color: var(--light-color);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background-color: transparent;
+        }
+
+        .dark-mode .nav-tabs .nav-link.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .heatmap-container {
+            height: 400px;
+        }
+
+        .ag-theme-alpine {
+            --ag-grid-size: 8px;
+            --ag-list-item-height: 28px;
+            --ag-font-size: 14px;
+            --ag-font-family: 'Poppins', sans-serif;
+            --ag-border-radius: 8px;
+            height: 500px;
+            width: 100%;
+        }
+
+        .dark-mode .ag-theme-alpine {
+            --ag-foreground-color: #f8f9fa;
+            --ag-background-color: #2d3748;
+            --ag-header-background-color: #1a202c;
+            --ag-row-hover-color: rgba(67, 97, 238, 0.2);
+            --ag-border-color: #4a5568;
+        }
+
+        .data-table-container {
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .edit-history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .dark-mode .edit-history-item {
+            border-bottom-color: #4a5568;
+        }
+
+        .edit-history-item:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .dark-mode .edit-history-item:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .comparison-card {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .comparison-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .comparison-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .dark-mode .comparison-label {
+            color: #a0aec0;
+        }
+
+        .trend-indicator {
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        .trend-neutral {
+            color: var(--warning-color);
+        }
+
+        .subject-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1 0 120px;
+            max-width: 150px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #4361ee20;
+            border: 1px solid #4361ee40;
+        }
+
+        .dark-mode .subject-card {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: rgba(67, 97, 238, 0.3);
+        }
+
+        .subject-card:hover {
+            transform: scale(1.05);
+        }
+
+        .subject-card.active {
+            border: 2px solid var(--primary-color);
+            background-color: rgba(67, 97, 238, 0.2);
+        }
+
+        .dark-mode .subject-card.active {
+            border-color: var(--accent-color);
+            background-color: rgba(76, 201, 240, 0.2);
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .dark-mode .modal-content {
+            background-color: var(--card-bg-dark);
+        }
+
+        .subject-edit-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .subject-edit-form label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .subject-edit-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .session-tag {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .session-notes {
+            white-space: pre-wrap;
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .dark-mode .session-notes {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .time-distribution-chart {
+            height: 350px;
+        }
+
+        .calendar-heatmap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            vertical-align: text-bottom;
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border 0.75s linear infinite;
+        }
+
+        @keyframes spinner-border {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .loading-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .dark-mode .loading-content {
+            background-color: var(--card-bg-dark);
+        }
+
+        .data-export-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .data-export-btn {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-value {
+                font-size: 2rem;
+            }
+
+            .subject-card {
+                flex: 1 0 100px;
+                max-width: 120px;
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .ag-theme-alpine {
+                height: 400px;
+            }
+
+            .data-export-btn {
+                min-width: 100%;
+            }
+        }
+        /*ch-domain-text{
+            color:white;
+            background: #000;
+        }*/
+        
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-bar-chart-line-fill me-2"></i>StudySmart Analytics
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#subjects">Subjects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#sessions">Sessions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#trends">Trends</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="form-check form-switch me-3">
+                        <input class="form-check-input" type="checkbox" id="themeToggle">
+                        <label class="form-check-label" for="themeToggle">
+                            <i class="bi bi-moon-fill"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p class="mt-3">Loading data...</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-value" id="totalStudyTime">0</div>
+                        <div class="stats-label">Total Study Hours</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-value" id="weeklyStudyTime">0</div>
+                        <div class="stats-label">This Week</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-value" id="dailyStudyTime">0</div>
+                        <div class="stats-label">Today</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-value" id="sessionsCompleted">0</div>
+                        <div class="stats-label">Sessions</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Weekly Study Distribution</span>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary" id="timeframeWeekBtn">Week</button>
+                                <button class="btn btn-sm btn-outline-primary" id="timeframeMonthBtn">Month</button>
+                                <button class="btn btn-sm btn-outline-primary" id="timeframeYearBtn">Year</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="timeDistributionChart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Subject Performance</span>
+                            <div class="form-group mb-0" style="max-width: 200px;">
+                                <select class="form-select form-select-sm" id="subjectPerformanceMetric">
+                                    <option value="hours">Total Hours</option>
+                                    <option value="sessions">Session Count</option>
+                                    <option value="consistency">Consistency</option>
+                                    <option value="efficiency">Efficiency</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="subjectPerformanceChart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          
+        </section>
+
+        <!-- Subjects Section -->
+        <section id="subjects" class="mt-5">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Subjects Overview</span>
+                            <button class="btn btn-sm btn-outline-primary" id="addSubjectBtn">
+                                <i class="bi bi-plus-lg"></i> Add Subject
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="subject-selector d-flex flex-wrap gap-2 mb-3" id="subjectSelector">
+                                <!-- Subjects will be added here as cards -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="subjectTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab"
+                                        data-bs-target="#details" type="button">Details</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="history-tab" data-bs-toggle="tab"
+                                        data-bs-target="#history" type="button">Edit History</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="progress-tab" data-bs-toggle="tab"
+                                        data-bs-target="#progress" type="button">Progress</button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="subjectTabContent">
+                                <div class="tab-pane fade show active" id="details" role="tabpanel">
+                                    <div id="subjectDetails">
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-journal-text" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">Select a subject to view details</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="history" role="tabpanel">
+                                    <div class="subject-edit-history" id="subjectEditHistory">
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-clock-history" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">No edit history available</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="progress" role="tabpanel">
+                                    <div id="subjectProgressChart" class="chart-container">
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-graph-up" style="font-size: 3rem; opacity: 0.3;"></i>
+                                            <p class="mt-3">No progress data available</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sessions Section -->
+        <section id="sessions" class="mt-5">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Session Analysis</span>
+                    <div class="d-flex">
+                        <div class="input-group me-2" style="width: 250px;">
+                            <input type="text" class="form-control" id="sessionDateRange"
+                                placeholder="Select date range">
+                            <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" id="exportSessionsBtn">
+                            <i class="bi bi-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Session Duration Distribution
+                                </div>
+                                <div class="card-body">
+                                    <div id="sessionDurationChart" class="chart-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Time of Day Analysis
+                                </div>
+                                <div class="card-body">
+                                    <div id="timeOfDayChart" class="chart-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-table-container">
+                        <div id="sessionsGrid" class="ag-theme-alpine"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trends Section -->
+        <section id="trends" class="mt-5">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="trendsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="daily-tab" data-bs-toggle="tab" data-bs-target="#daily"
+                                type="button">Daily Trends</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly"
+                                type="button">Weekly Trends</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly"
+                                type="button">Monthly Trends</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="trendsTabContent">
+                        <div class="tab-pane fade show active" id="daily" role="tabpanel">
+                            <div id="dailyTrendChart" class="chart-container"></div>
+                        </div>
+                        <div class="tab-pane fade" id="weekly" role="tabpanel">
+                            <div id="weeklyTrendChart" class="chart-container"></div>
+                        </div>
+                        <div class="tab-pane fade" id="monthly" role="tabpanel">
+                            <div id="monthlyTrendChart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Subject Comparison
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select class="form-select mb-3" id="compareSubject1">
+                                        <option value="">Select Subject 1</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select mb-3" id="compareSubject2">
+                                        <option value="">Select Subject 2</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="subjectComparisonChart" class="chart-container"></div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <div class="comparison-card p-3">
+                                        <div class="comparison-value" id="totalHours1">0 hrs</div>
+                                        <div class="comparison-label">Total Hours</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="comparison-card p-3">
+                                        <div class="comparison-value" id="avgDuration1">0 mins</div>
+                                        <div class="comparison-label">Avg. Duration</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="comparison-card p-3">
+                                        <div class="comparison-value" id="consistency1">0%</div>
+                                        <div class="comparison-label">Consistency</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Performance Metrics
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="card-title">Current Streak</h6>
+                                                    <p class="card-text" id="currentStreak">0 days</p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-primary" id="streakTrend"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="card-title">Longest Streak</h6>
+                                                    <p class="card-text" id="longestStreak">0 days</p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge bg-primary">All Time</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">Weekly Goal Progress</h6>
+                                    <div class="progress progress-custom mb-2">
+                                        <div class="progress-bar progress-bar-custom" id="weeklyGoalProgress"
+                                            style="width: 0%"></div>
+                                    </div>
+                                    <p class="card-text text-end mb-0" id="weeklyGoalText">0% of weekly goal</p>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Study Efficiency</h6>
+                                    <div id="efficiencyGauge" class="chart-container" style="height: 150px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Add/Edit Subject Modal -->
+    <div class="modal fade" id="subjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subjectModalTitle">Add New Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="subjectForm">
+                        <input type="hidden" id="subjectId">
+                        <div class="form-group mb-3">
+                            <label for="subjectName" class="form-label">Subject Name</label>
+                            <input type="text" class="form-control" id="subjectName" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="weeklyGoal" class="form-label">Weekly Goal (hours)</label>
+                            <input type="number" class="form-control" id="weeklyGoal" min="1" value="5" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="subjectColor" class="form-label">Subject Color</label>
+                            <input type="color" class="form-control form-control-color" id="subjectColor"
+                                value="#4361ee">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="subjectIcon" class="form-label">Subject Icon</label>
+                            <select class="form-select" id="subjectIcon">
+                                <option value="bi-book">Book</option>
+                                <option value="bi-calculator">Math</option>
+                                <option value="bi-code-slash">Programming</option>
+                                <option value="bi-laptop">Computer</option>
+                                <option value="bi-file-earmark-text">Exam</option>
+                                <option value="bi-globe2">Language</option>
+                                <option value="bi-file-text">Literature</option>
+                                <option value="bi-gear">Engineering</option>
+                                <option value="bi-airplane-fill">Aviation</option>
+                                <option value="bi-bar-chart">Data Analysis</option>
+                                <option value="bi-database">Database</option>
+                                <option value="bi-terminal">Unix</option>
+                                <option value="bi-code-slash">Python</option>
+                                <option value="bi-palette">Design</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveSubjectBtn">Save Subject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Details Modal -->
+    <div class="modal fade" id="sessionDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Session Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="sessionDetailsContent">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Options Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="data-export-options">
+                        <button class="btn btn-outline-primary data-export-btn" id="exportCSVBtn">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                        </button>
+                        <button class="btn btn-outline-primary data-export-btn" id="exportJSONBtn">
+                            <i class="bi bi-file-code"></i> JSON
+                        </button>
+                        <button class="btn btn-outline-primary data-export-btn" id="exportPDFBtn">
+                            <i class="bi bi-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn btn-outline-primary data-export-btn" id="exportExcelBtn">
+                            <i class="bi bi-file-excel"></i> Excel
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-btn" id="scrollToTopBtn">
+        <i class="bi bi-arrow-up"></i>
+    </div>
+
+    <!-- Libraries -->
+     
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
+    <!-- Add this before the daterangepicker script -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@28.2.1/dist/ag-grid-community.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.2.0/dist/chartjs-adapter-luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+   <!-- Load d3.js first (required by CalHeatmap) -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+<!-- Then load CalHeatmap -->
+<script src="https://cdn.jsdelivr.net/npm/cal-heatmap@4.2.0/dist/cal-heatmap.min.js"></script>
+
+    <script>
+        // Firebase Configuration (same as your StudySmart Tracker)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCpaQIkoXNDXVwyf6YmVen5c9rEuSLuARE",
+  authDomain: "him-timer.firebaseapp.com",
+  databaseURL: "https://him-timer-default-rtdb.firebaseio.com",
+  projectId: "him-timer",
+  storageBucket: "him-timer.firebasestorage.app",
+  messagingSenderId: "440722542325",
+  appId: "1:440722542325:web:2b3baee318c684852d7fbc",
+  measurementId: "G-F160TVSTCV"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // App State
+        const state = {
+            subjects: {},
+            sessions: {},
+            editHistory: {},
+            selectedSubjectId: null,
+            dateRange: {
+                start: moment().subtract(30, 'days').toDate(),
+                end: new Date()
+            },
+            timeframe: 'week', // week, month, year
+            charts: {},
+            gridApi: null,
+            gridColumnApi: null
+        };
+
+        // DOM Elements
+        const elements = {
+            loadingOverlay: document.getElementById('loadingOverlay'),
+            totalStudyTime: document.getElementById('totalStudyTime'),
+            weeklyStudyTime: document.getElementById('weeklyStudyTime'),
+            dailyStudyTime: document.getElementById('dailyStudyTime'),
+            sessionsCompleted: document.getElementById('sessionsCompleted'),
+            currentStreak: document.getElementById('currentStreak'),
+            longestStreak: document.getElementById('longestStreak'),
+            streakTrend: document.getElementById('streakTrend'),
+            weeklyGoalProgress: document.getElementById('weeklyGoalProgress'),
+            weeklyGoalText: document.getElementById('weeklyGoalText'),
+            subjectSelector: document.getElementById('subjectSelector'),
+            subjectDetails: document.getElementById('subjectDetails'),
+            subjectEditHistory: document.getElementById('subjectEditHistory'),
+            subjectForm: document.getElementById('subjectForm'),
+            subjectModal: new bootstrap.Modal(document.getElementById('subjectModal')),
+            subjectModalTitle: document.getElementById('subjectModalTitle'),
+            subjectId: document.getElementById('subjectId'),
+            subjectName: document.getElementById('subjectName'),
+            weeklyGoal: document.getElementById('weeklyGoal'),
+            subjectColor: document.getElementById('subjectColor'),
+            subjectIcon: document.getElementById('subjectIcon'),
+            addSubjectBtn: document.getElementById('addSubjectBtn'),
+            saveSubjectBtn: document.getElementById('saveSubjectBtn'),
+            sessionDateRange: document.getElementById('sessionDateRange'),
+            exportSessionsBtn: document.getElementById('exportSessionsBtn'),
+            exportModal: new bootstrap.Modal(document.getElementById('exportModal')),
+            exportCSVBtn: document.getElementById('exportCSVBtn'),
+            exportJSONBtn: document.getElementById('exportJSONBtn'),
+            exportPDFBtn: document.getElementById('exportPDFBtn'),
+            exportExcelBtn: document.getElementById('exportExcelBtn'),
+            timeframeWeekBtn: document.getElementById('timeframeWeekBtn'),
+            timeframeMonthBtn: document.getElementById('timeframeMonthBtn'),
+            timeframeYearBtn: document.getElementById('timeframeYearBtn'),
+            subjectPerformanceMetric: document.getElementById('subjectPerformanceMetric'),
+            compareSubject1: document.getElementById('compareSubject1'),
+            compareSubject2: document.getElementById('compareSubject2'),
+            scrollToTopBtn: document.getElementById('scrollToTopBtn'),
+            themeToggle: document.getElementById('themeToggle')
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupEventListeners();
+            setupThemeToggle();
+            setupDateRangePicker();
+            setupScrollToTopButton();
+        });
+
+        function showLoading() {
+            elements.loadingOverlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            elements.loadingOverlay.style.display = 'none';
+        }
+
+        function loadData() {
+            showLoading();
+
+            // Load subjects
+            database.ref('subjects').on('value', (snapshot) => {
+                state.subjects = snapshot.val() || {};
+                renderSubjectSelector();
+                renderSubjectDropdowns();
+                updateDashboardStats();
+                renderSubjectPerformanceChart();
+            });
+
+            // Load sessions
+            database.ref('sessions').on('value', (snapshot) => {
+                state.sessions = snapshot.val() || {};
+                setupSessionsGrid();
+                updateDashboardStats();
+                renderTimeDistributionChart();
+                renderSessionDurationChart();
+                renderTimeOfDayChart();
+               
+                renderTrendCharts();
+                hideLoading();
+            });
+
+            // Load edit history
+            database.ref('editHistory').on('value', (snapshot) => {
+                state.editHistory = snapshot.val() || {};
+            });
+        }
+
+        function setupEventListeners() {
+            // Subject management
+            elements.addSubjectBtn.addEventListener('click', () => {
+                elements.subjectModalTitle.textContent = 'Add New Subject';
+                elements.subjectForm.reset();
+                elements.subjectId.value = '';
+                elements.subjectModal.show();
+            });
+
+            elements.saveSubjectBtn.addEventListener('click', saveSubject);
+
+            // Timeframe buttons
+            elements.timeframeWeekBtn.addEventListener('click', () => {
+                state.timeframe = 'week';
+                updateTimeframeButtons();
+                renderTimeDistributionChart();
+            });
+
+            elements.timeframeMonthBtn.addEventListener('click', () => {
+                state.timeframe = 'month';
+                updateTimeframeButtons();
+                renderTimeDistributionChart();
+            });
+
+            elements.timeframeYearBtn.addEventListener('click', () => {
+                state.timeframe = 'year';
+                updateTimeframeButtons();
+                renderTimeDistributionChart();
+            });
+
+            // Subject performance metric
+            elements.subjectPerformanceMetric.addEventListener('change', renderSubjectPerformanceChart);
+
+            // Subject comparison
+            elements.compareSubject1.addEventListener('change', renderSubjectComparison);
+            elements.compareSubject2.addEventListener('change', renderSubjectComparison);
+
+            // Export buttons
+            elements.exportSessionsBtn.addEventListener('click', () => elements.exportModal.show());
+            elements.exportCSVBtn.addEventListener('click', exportToCSV);
+            elements.exportJSONBtn.addEventListener('click', exportToJSON);
+            elements.exportPDFBtn.addEventListener('click', exportToPDF);
+            elements.exportExcelBtn.addEventListener('click', exportToExcel);
+
+            // Theme toggle
+            elements.themeToggle.addEventListener('change', toggleTheme);
+        }
+
+        function setupThemeToggle() {
+            const savedTheme = localStorage.getItem('darkMode') === 'true';
+            if (savedTheme) {
+                document.body.classList.add('dark-mode');
+                elements.themeToggle.checked = true;
+            }
+        }
+
+        function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    
+    // Update charts
+    if (state.charts.timeDistribution) {
+        state.charts.timeDistribution.updateOptions({
+            theme: {
+                mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+            }
+        });
+    }
+    
+    // Update grid - use the correct API method
+    if (state.gridApi) {
+        // First method to try (newer AG Grid versions)
+        if (typeof state.gridApi.setOption === 'function') {
+            state.gridApi.setOption('theme', document.body.classList.contains('dark-mode') ? 
+                'ag-theme-alpine-dark' : 'ag-theme-alpine');
+        } 
+        // Fallback method (older AG Grid versions)
+        else if (typeof state.gridApi.setGridOption === 'function') {
+            state.gridApi.setGridOption('theme', document.body.classList.contains('dark-mode') ? 
+                'ag-theme-alpine-dark' : 'ag-theme-alpine');
+        }
+    }
+}
+
+        function setupDateRangePicker() {
+            // Initialize date range picker only after jQuery is loaded
+            if (typeof $ === 'undefined') {
+                console.error('jQuery is not loaded. Date range picker requires jQuery.');
+                return;
+            }
+
+            const dateRangePicker = $(elements.sessionDateRange).daterangepicker({
+                startDate: state.dateRange.start,
+                endDate: state.dateRange.end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                opens: 'left'
+            }, function (start, end) {
+                state.dateRange.start = start.toDate();
+                state.dateRange.end = end.toDate();
+                setupSessionsGrid();
+                renderSessionDurationChart();
+                renderTimeOfDayChart();
+                renderTrendCharts();
+            });
+
+            // Store the dateRangePicker instance in state if you need to access it later
+            state.dateRangePicker = dateRangePicker;
+        }
+
+
+        function setupScrollToTopButton() {
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    elements.scrollToTopBtn.style.display = 'flex';
+                } else {
+                    elements.scrollToTopBtn.style.display = 'none';
+                }
+            });
+
+            elements.scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        function updateTimeframeButtons() {
+            elements.timeframeWeekBtn.classList.remove('active');
+            elements.timeframeMonthBtn.classList.remove('active');
+            elements.timeframeYearBtn.classList.remove('active');
+
+            if (state.timeframe === 'week') {
+                elements.timeframeWeekBtn.classList.add('active');
+            } else if (state.timeframe === 'month') {
+                elements.timeframeMonthBtn.classList.add('active');
+            } else if (state.timeframe === 'year') {
+                elements.timeframeYearBtn.classList.add('active');
+            }
+        }
+
+        function renderSubjectSelector() {
+            elements.subjectSelector.innerHTML = '';
+
+            Object.entries(state.subjects).forEach(([id, subject]) => {
+                const subjectCard = document.createElement('div');
+                subjectCard.className = `subject-card ${state.selectedSubjectId === id ? 'active' : ''}`;
+                subjectCard.style.backgroundColor = subject.color ? `${subject.color}20` : '#4361ee20';
+                subjectCard.style.borderColor = subject.color ? `${subject.color}40` : '#4361ee40';
+
+                subjectCard.innerHTML = `
+                    <div style="font-size: 24px; margin-bottom: 8px;">
+                        <i class="bi ${subject.icon || 'bi-book'}"></i>
+                    </div>
+                    <div style="font-weight: 500; font-size: 0.9rem;">${subject.name}</div>
+                `;
+
+                subjectCard.addEventListener('click', () => {
+                    state.selectedSubjectId = id;
+                    renderSubjectSelector();
+                    renderSubjectDetails();
+                    renderSubjectEditHistory();
+                    renderSubjectProgressChart();
+                });
+
+                elements.subjectSelector.appendChild(subjectCard);
+            });
+        }
+
+        function renderSubjectDropdowns() {
+            elements.compareSubject1.innerHTML = '<option value="">Select Subject 1</option>';
+            elements.compareSubject2.innerHTML = '<option value="">Select Subject 2</option>';
+
+            Object.entries(state.subjects).forEach(([id, subject]) => {
+                const option1 = document.createElement('option');
+                option1.value = id;
+                option1.textContent = subject.name;
+                elements.compareSubject1.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = id;
+                option2.textContent = subject.name;
+                elements.compareSubject2.appendChild(option2);
+            });
+        }
+
+        function renderSubjectDetails() {
+            if (!state.selectedSubjectId) {
+                elements.subjectDetails.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-journal-text" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-3">Select a subject to view details</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const subject = state.subjects[state.selectedSubjectId];
+            if (!subject) return;
+
+            // Calculate subject stats
+            const subjectSessions = Object.values(state.sessions).filter(session =>
+                session.subject === state.selectedSubjectId && !session.isBreak
+            );
+
+            const totalHours = subjectSessions.reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+            const sessionCount = subjectSessions.length;
+            const avgDuration = sessionCount > 0 ? (totalHours * 60 / sessionCount).toFixed(1) : 0;
+
+            const weeklyHours = subjectSessions
+                .filter(session => moment(session.startTime).isAfter(moment().subtract(7, 'days')))
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+
+            const goalPercentage = Math.min((weeklyHours / subject.weeklyGoal) * 100, 100);
+
+            elements.subjectDetails.innerHTML = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>
+                            <span class="subject-color-indicator" style="background-color: ${subject.color || '#4361ee'}"></span>
+                            ${subject.name}
+                        </h4>
+                        <p class="text-muted">
+                            <i class="bi ${subject.icon || 'bi-book'}"></i> ${subject.weeklyGoal} hours weekly goal
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button class="btn btn-outline-primary" id="editSubjectBtn">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger ms-2" id="deleteSubjectBtn">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Total Hours</h6>
+                                <p class="card-text">${totalHours.toFixed(1)}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Sessions</h6>
+                                <p class="card-text">${sessionCount}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Avg. Duration</h6>
+                                <p class="card-text">${avgDuration} mins</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">This Week</h6>
+                                <p class="card-text">${weeklyHours.toFixed(1)}/${subject.weeklyGoal} hrs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Weekly Goal Progress</h5>
+                    <div class="progress progress-custom mb-2">
+                        <div class="progress-bar progress-bar-custom" role="progressbar" 
+                            style="width: ${goalPercentage}%" 
+                            aria-valuenow="${goalPercentage}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                            ${goalPercentage.toFixed(0)}%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Recent Sessions</h5>
+                    <div class="list-group">
+                        ${subjectSessions.slice(0, 5).map(session => `
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        ${moment(session.startTime).format('MMM D, YYYY h:mm A')}
+                                        <span class="badge bg-primary ms-2">${session.duration} mins</span>
+                                    </div>
+                                    <div>
+                                        ${session.tags ? session.tags.split(',').map(tag =>
+                `<span class="session-tag">${tag.trim()}</span>`
+            ).join('') : ''}
+                                    </div>
+                                </div>
+                                ${session.notes ? `<div class="session-notes mt-2">${session.notes}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners to edit/delete buttons
+            document.getElementById('editSubjectBtn').addEventListener('click', () => {
+                elements.subjectModalTitle.textContent = 'Edit Subject';
+                elements.subjectId.value = state.selectedSubjectId;
+                elements.subjectName.value = subject.name;
+                elements.weeklyGoal.value = subject.weeklyGoal;
+                elements.subjectColor.value = subject.color || '#4361ee';
+                elements.subjectIcon.value = subject.icon || 'bi-book';
+                elements.subjectModal.show();
+            });
+
+            document.getElementById('deleteSubjectBtn').addEventListener('click', () => {
+                if (confirm(`Are you sure you want to delete "${subject.name}"? This will also delete all associated sessions.`)) {
+                    // First delete all sessions for this subject
+                    const sessionsToDelete = Object.entries(state.sessions)
+                        .filter(([id, session]) => session.subject === state.selectedSubjectId)
+                        .map(([id]) => id);
+
+                    sessionsToDelete.forEach(id => {
+                        database.ref('sessions/' + id).remove();
+                    });
+
+                    // Then delete the subject
+                    database.ref('subjects/' + state.selectedSubjectId).remove();
+
+                    // Record edit history
+                    const historyRef = database.ref('editHistory').push();
+                    historyRef.set({
+                        type: 'subject_deleted',
+                        subjectId: state.selectedSubjectId,
+                        subjectName: subject.name,
+                        timestamp: new Date().toISOString(),
+                        deletedBy: 'user' // In a real app, you'd use the actual user ID
+                    });
+
+                    state.selectedSubjectId = null;
+                    elements.subjectModal.hide();
+                }
+            });
+        }
+
+        function renderSubjectEditHistory() {
+            if (!state.selectedSubjectId) {
+                elements.subjectEditHistory.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-clock-history" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-3">No edit history available</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const subjectHistory = Object.values(state.editHistory).filter(entry =>
+                entry.subjectId === state.selectedSubjectId
+            ).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (subjectHistory.length === 0) {
+                elements.subjectEditHistory.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-clock-history" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="mt-3">No edit history for this subject</p>
+                    </div>
+                `;
+                return;
+            }
+
+            elements.subjectEditHistory.innerHTML = subjectHistory.map(entry => `
+                <div class="edit-history-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>${formatEditType(entry.type)}</strong>
+                        <span class="text-muted">${moment(entry.timestamp).fromNow()}</span>
+                    </div>
+                    ${renderEditDetails(entry)}
+                </div>
+            `).join('');
+        }
+
+        function formatEditType(type) {
+            const types = {
+                'subject_created': 'Subject Created',
+                'subject_updated': 'Subject Updated',
+                'subject_deleted': 'Subject Deleted',
+                'goal_changed': 'Goal Changed'
+            };
+            return types[type] || type;
+        }
+
+        function renderEditDetails(entry) {
+            if (entry.type === 'subject_updated') {
+                return `
+                    <div class="mt-2">
+                        ${Object.entries(entry.changes).map(([field, change]) => `
+                            <div>${formatFieldName(field)}: 
+                                <span class="text-danger">${change.old}</span> → 
+                                <span class="text-success">${change.new}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (entry.type === 'goal_changed') {
+                return `
+                    <div class="mt-2">
+                        Weekly goal changed from 
+                        <span class="text-danger">${entry.oldGoal} hours</span> to 
+                        <span class="text-success">${entry.newGoal} hours</span>
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        function formatFieldName(field) {
+            const fields = {
+                'name': 'Name',
+                'color': 'Color',
+                'icon': 'Icon',
+                'weeklyGoal': 'Weekly Goal'
+            };
+            return fields[field] || field;
+        }
+
+        function saveSubject() {
+            const id = elements.subjectId.value;
+            const name = elements.subjectName.value.trim();
+            const weeklyGoal = parseFloat(elements.weeklyGoal.value);
+            const color = elements.subjectColor.value;
+            const icon = elements.subjectIcon.value;
+
+            if (!name || !weeklyGoal) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const subjectData = {
+                name,
+                weeklyGoal,
+                color,
+                icon,
+                updatedAt: new Date().toISOString()
+            };
+
+            if (id) {
+                // Editing existing subject
+                const oldSubject = state.subjects[id];
+                const changes = {};
+
+                if (oldSubject.name !== name) changes.name = { old: oldSubject.name, new: name };
+                if (oldSubject.weeklyGoal !== weeklyGoal) changes.weeklyGoal = { old: oldSubject.weeklyGoal, new: weeklyGoal };
+                if (oldSubject.color !== color) changes.color = { old: oldSubject.color, new: color };
+                if (oldSubject.icon !== icon) changes.icon = { old: oldSubject.icon, new: icon };
+
+                // Record edit history if anything changed
+                if (Object.keys(changes).length > 0) {
+                    const historyRef = database.ref('editHistory').push();
+                    historyRef.set({
+                        type: 'subject_updated',
+                        subjectId: id,
+                        subjectName: name,
+                        changes,
+                        timestamp: new Date().toISOString(),
+                        editedBy: 'user' // In a real app, you'd use the actual user ID
+                    });
+
+                    // Special history entry for goal changes
+                    if (changes.weeklyGoal) {
+                        const goalHistoryRef = database.ref('editHistory').push();
+                        goalHistoryRef.set({
+                            type: 'goal_changed',
+                            subjectId: id,
+                            subjectName: name,
+                            oldGoal: changes.weeklyGoal.old,
+                            newGoal: changes.weeklyGoal.new,
+                            timestamp: new Date().toISOString(),
+                            changedBy: 'user'
+                        });
+                    }
+                }
+
+                database.ref('subjects/' + id).update(subjectData);
+            } else {
+                // Creating new subject
+                subjectData.createdAt = new Date().toISOString();
+                const newSubjectRef = database.ref('subjects').push();
+                newSubjectRef.set(subjectData);
+
+                // Record edit history
+                const historyRef = database.ref('editHistory').push();
+                historyRef.set({
+                    type: 'subject_created',
+                    subjectId: newSubjectRef.key,
+                    subjectName: name,
+                    timestamp: new Date().toISOString(),
+                    createdBy: 'user'
+                });
+            }
+
+            elements.subjectModal.hide();
+        }
+
+        function setupSessionsGrid() {
+            const filteredSessions = filterSessionsByDate();
+
+            const columnDefs = [
+                {
+                    headerName: "Subject",
+                    field: "subjectName",
+                    cellRenderer: (params) => {
+                        const subject = state.subjects[params.data.subject];
+                        if (!subject) return params.value;
+                        return `
+                            <span class="subject-color-indicator" style="background-color: ${subject.color || '#4361ee'}"></span>
+                            ${params.value}
+                        `;
+                    }
+                },
+                {
+                    headerName: "Date", field: "date", sort: 'desc',
+                    valueFormatter: (params) => moment(params.value).format('MMM D, YYYY h:mm A')
+                },
+                {
+                    headerName: "Duration", field: "duration",
+                    valueFormatter: (params) => `${params.value} mins`
+                },
+                {
+                    headerName: "Tags", field: "tags",
+                    cellRenderer: (params) => params.value ? params.value.split(',').map(tag =>
+                        `<span class="session-tag">${tag.trim()}</span>`
+                    ).join('') : ''
+                },
+                {
+                    headerName: "Notes", field: "notes",
+                    cellRenderer: (params) => params.value ? `<div class="session-notes">${params.value}</div>` : ''
+                },
+                {
+                    headerName: "Actions",
+                    cellRenderer: (params) => `
+                        <button class="btn btn-sm btn-outline-primary view-session-btn" data-session-id="${params.data.id}">
+                            <i class="bi bi-eye"></i> View
+                        </button>
+                    `,
+                    onCellClicked: (params) => {
+                        if (params.event.target.closest('.view-session-btn')) {
+                            showSessionDetails(params.data.id);
+                        }
+                    }
+                }
+            ];
+
+            const rowData = filteredSessions.map(([id, session]) => {
+                const subject = state.subjects[session.subject];
+                return {
+                    id,
+                    subject: session.subject,
+                    subjectName: subject ? subject.name : 'Unknown',
+                    date: session.startTime,
+                    duration: session.duration,
+                    tags: session.tags,
+                    notes: session.notes,
+                    isBreak: session.isBreak || false
+                };
+            });
+
+            const gridOptions = {
+                columnDefs: columnDefs,
+                rowData: rowData,
+                pagination: true,
+                paginationPageSize: 10,
+                domLayout: 'autoHeight',
+                defaultColDef: {
+                    sortable: true,
+                    filter: true,
+                    resizable: true,
+                    wrapText: true,
+                    autoHeight: true
+                },
+                theme: document.body.classList.contains('dark-mode') ? 'ag-theme-alpine-dark' : 'ag-theme-alpine',
+                onGridReady: (params) => {
+                    state.gridApi = params.api;
+                    state.gridColumnApi = params.columnApi;
+                    params.api.sizeColumnsToFit();
+                }
+            };
+
+            // If grid already exists, update it
+            if (state.gridApi) {
+                state.gridApi.setGridOption('rowData', rowData);
+            } else {
+                // Create new grid
+                const gridDiv = document.querySelector('#sessionsGrid');
+                new agGrid.Grid(gridDiv, gridOptions);
+            }
+        }
+
+        function filterSessionsByDate() {
+            return Object.entries(state.sessions).filter(([id, session]) => {
+                const sessionDate = new Date(session.startTime);
+                return sessionDate >= state.dateRange.start && sessionDate <= state.dateRange.end;
+            });
+        }
+
+        function showSessionDetails(sessionId) {
+            const session = state.sessions[sessionId];
+            if (!session) return;
+
+            const subject = state.subjects[session.subject] || { name: 'Unknown' };
+
+            const modalContent = document.getElementById('sessionDetailsContent');
+            modalContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>
+                            <span class="subject-color-indicator" style="background-color: ${subject.color || '#4361ee'}"></span>
+                            ${subject.name}
+                        </h5>
+                        <p class="text-muted">
+                            <i class="bi ${subject.icon || 'bi-book'}"></i> ${subject.weeklyGoal} hours weekly goal
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="text-muted">
+                            ${moment(session.startTime).format('MMMM Do YYYY, h:mm a')}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Duration</h6>
+                                <p class="card-text">${session.duration} minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Session Type</h6>
+                                <p class="card-text">${session.isBreak ? 'Break' : 'Study'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">Completion</h6>
+                                <p class="card-text">${moment(session.endTime).format('MMMM Do YYYY, h:mm a')}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Tags</h5>
+                    <div>
+                        ${session.tags ? session.tags.split(',').map(tag =>
+                `<span class="session-tag">${tag.trim()}</span>`
+            ).join('') : 'No tags'}
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Notes</h5>
+                    <div class="session-notes">${session.notes || 'No notes available'}</div>
+                </div>
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('sessionDetailsModal'));
+            modal.show();
+        }
+
+        function renderTimeDistributionChart() {
+    const categories = getTimeframeCategories();
+    const seriesData = calculateTimeDistribution(categories);
+
+    const options = {
+        series: seriesData,
+        chart: {
+            type: 'bar',
+            height: 350,
+            stacked: true,
+            toolbar: {
+                show: true
+            },
+            zoom: {
+                enabled: true
+            },
+            foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                borderRadius: 4,
+                columnWidth: '70%',
+            },
+        },
+        xaxis: {
+            type: 'category',
+            categories: categories,
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Study Hours',
+                style: {
+                    color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            },
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                formatter: function(val) {
+                    return val.toFixed(0); // Show whole numbers only
+                }
+            },
+            decimalsInFloat: 0 // Ensure no decimal places
+        },
+        colors: Object.values(state.subjects).map(subject => subject.color || '#4361ee'),
+        legend: {
+            position: 'right',
+            labels: {
+                colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val.toFixed(1) + " hours"; // Keep one decimal in tooltip for precision
+                }
+            }
+        },
+        theme: {
+            mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function(val) {
+                return val.toFixed(0); // Show whole numbers in data labels
+            }
+        }
+    };
+
+    if (state.charts.timeDistribution) {
+        state.charts.timeDistribution.updateOptions(options);
+    } else {
+        state.charts.timeDistribution = new ApexCharts(document.querySelector("#timeDistributionChart"), options);
+        state.charts.timeDistribution.render();
+    }
+}
+
+        function getTimeframeCategories() {
+            const now = moment();
+            let categories = [];
+
+            if (state.timeframe === 'week') {
+                // Last 7 days
+                for (let i = 6; i >= 0; i--) {
+                    categories.push(now.clone().subtract(i, 'days').format('ddd, MMM D'));
+                }
+            } else if (state.timeframe === 'month') {
+                // Last 4 weeks
+                for (let i = 3; i >= 0; i--) {
+                    const start = now.clone().subtract(i + 1, 'weeks').add(1, 'day');
+                    const end = now.clone().subtract(i, 'weeks');
+                    categories.push(`${start.format('MMM D')} - ${end.format('MMM D')}`);
+                }
+            } else if (state.timeframe === 'year') {
+                // Last 12 months
+                for (let i = 11; i >= 0; i--) {
+                    categories.push(now.clone().subtract(i, 'months').format('MMM YYYY'));
+                }
+            }
+
+            return categories;
+        }
+
+        function calculateTimeDistribution(categories) {
+            const series = Object.entries(state.subjects).map(([id, subject]) => {
+                const data = categories.map(category => {
+                    let hours = 0;
+
+                    if (state.timeframe === 'week') {
+                        // Daily data
+                        const date = moment(category, 'ddd, MMM D');
+                        hours = getHoursForSubjectOnDate(id, date);
+                    } else if (state.timeframe === 'month') {
+                        // Weekly data
+                        const [startStr, endStr] = category.split(' - ');
+                        const start = moment(startStr, 'MMM D');
+                        const end = moment(endStr, 'MMM D');
+                        hours = getHoursForSubjectBetweenDates(id, start, end);
+                    } else if (state.timeframe === 'year') {
+                        // Monthly data
+                        const month = moment(category, 'MMM YYYY');
+                        const start = month.startOf('month');
+                        const end = month.endOf('month');
+                        hours = getHoursForSubjectBetweenDates(id, start, end);
+                    }
+
+                    return hours;
+                });
+
+                return {
+                    name: subject.name,
+                    data: data
+                };
+            });
+
+            return series;
+        }
+
+        function getHoursForSubjectOnDate(subjectId, date) {
+            return Object.values(state.sessions)
+                .filter(session => {
+                    const sessionDate = moment(session.startTime);
+                    return session.subject === subjectId &&
+                        !session.isBreak &&
+                        sessionDate.isSame(date, 'day');
+                })
+                .reduce((total, session) => total + (parseFloat(session.duration) / 60), 0);
+        }
+        function getHoursForSubjectBetweenDates(subjectId, start, end) {
+            return Object.values(state.sessions)
+                .filter(session => {
+                    const sessionDate = moment(session.startTime);
+                    return session.subject === subjectId &&
+                        !session.isBreak &&
+                        sessionDate.isBetween(start, end, null, '[]');
+                })
+                .reduce((total, session) => total + (parseFloat(session.duration) / 60), 0);
+        }
+        function renderSubjectPerformanceChart() {
+            const metric = elements.subjectPerformanceMetric.value;
+            const subjectData = calculateSubjectPerformance(metric);
+
+            const options = {
+                series: [{
+                    name: metric === 'hours' ? 'Study Hours' :
+                        metric === 'sessions' ? 'Session Count' :
+                            metric === 'consistency' ? 'Consistency Score' : 'Efficiency Score',
+                    data: subjectData.map(item => item.value)
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: true
+                    },
+                    foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                        distributed: true
+                    }
+                },
+                colors: subjectData.map(item => state.subjects[item.id].color || '#4361ee'),
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return metric === 'hours' ? val.toFixed(1) + 'h' :
+                            metric === 'sessions' ? val :
+                                val.toFixed(1) + '%';
+                    }
+                },
+                xaxis: {
+                    categories: subjectData.map(item => state.subjects[item.id].name),
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return metric === 'hours' ? val.toFixed(1) + ' hours' :
+                                metric === 'sessions' ? val + ' sessions' :
+                                    val.toFixed(1) + '%';
+                        }
+                    }
+                },
+                theme: {
+                    mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+                }
+            };
+
+            if (state.charts.subjectPerformance) {
+                state.charts.subjectPerformance.updateOptions(options);
+            } else {
+                state.charts.subjectPerformance = new ApexCharts(document.querySelector("#subjectPerformanceChart"), options);
+                state.charts.subjectPerformance.render();
+            }
+        }
+
+        function calculateSubjectPerformance(metric) {
+            return Object.entries(state.subjects).map(([id, subject]) => {
+                const subjectSessions = Object.values(state.sessions).filter(session =>
+                    session.subject === id && !session.isBreak
+                );
+
+                let value;
+
+                switch (metric) {
+                    case 'hours':
+                    case 'hours':
+                        value = subjectSessions.reduce((total, session) =>
+                            total + (parseFloat(session.duration) / 60), 0);
+                        break;
+                    case 'sessions':
+                        value = subjectSessions.length;
+                        break;
+                    case 'consistency':
+                        // Calculate consistency as percentage of weeks with at least one session
+                        const weeksWithSessions = new Set();
+                        subjectSessions.forEach(session => {
+                            weeksWithSessions.add(moment(session.startTime).format('YYYY-WW'));
+                        });
+                        const totalWeeks = moment().diff(moment(subject.createdAt || new Date()), 'weeks') + 1;
+                        value = totalWeeks > 0 ? (weeksWithSessions.size / totalWeeks) * 100 : 0;
+                        break;
+                    case 'efficiency':
+                        // Calculate efficiency as average duration compared to 25 minutes (Pomodoro standard)
+                        const avgDuration = subjectSessions.length > 0 ?
+                            subjectSessions.reduce((total, session) => total + parseFloat(session.duration), 0) / subjectSessions.length :
+                            0;
+                        value = (avgDuration / 25) * 100;
+                        break;
+                }
+
+                return { id, value };
+            }).sort((a, b) => b.value - a.value);
+        }
+
+        function renderSessionDurationChart() {
+            const filteredSessions = filterSessionsByDate().filter(([id, session]) => !session.isBreak);
+            const durationData = filteredSessions.map(([id, session]) => parseFloat(session.duration));
+
+            // Group into bins: 0-15, 15-30, 30-45, 45-60, 60-90, 90-120, 120+
+            const bins = [0, 15, 30, 45, 60, 90, 120, Infinity];
+            const binLabels = ['0-15', '15-30', '30-45', '45-60', '60-90', '90-120', '120+'];
+            const binCounts = new Array(bins.length - 1).fill(0);
+
+            durationData.forEach(duration => {
+                for (let i = 0; i < bins.length - 1; i++) {
+                    if (duration >= bins[i] && duration < bins[i + 1]) {
+                        binCounts[i]++;
+                        break;
+                    }
+                }
+            });
+
+            const options = {
+                series: [{
+                    name: 'Sessions',
+                    data: binCounts
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '70%',
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: binLabels,
+                    title: {
+                        text: 'Duration (minutes)',
+                        style: {
+                            color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Number of Sessions',
+                        style: {
+                            color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                colors: ['#4361ee'],
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " sessions";
+                        }
+                    }
+                },
+                theme: {
+                    mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+                }
+            };
+
+            if (state.charts.sessionDuration) {
+                state.charts.sessionDuration.updateOptions(options);
+            } else {
+                state.charts.sessionDuration = new ApexCharts(document.querySelector("#sessionDurationChart"), options);
+                state.charts.sessionDuration.render();
+            }
+        }
+
+        function renderTimeOfDayChart() {
+            const filteredSessions = filterSessionsByDate().filter(([id, session]) => !session.isBreak);
+            const hourCounts = new Array(24).fill(0);
+
+            filteredSessions.forEach(([id, session]) => {
+                const hour = moment(session.startTime).hour();
+                hourCounts[hour]++;
+            });
+
+            const options = {
+                series: [{
+                    name: 'Sessions',
+                    data: hourCounts
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '70%',
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+                    title: {
+                        text: 'Hour of Day',
+                        style: {
+                            color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Number of Sessions',
+                        style: {
+                            color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                colors: ['#4cc9f0'],
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " sessions";
+                        }
+                    }
+                },
+                theme: {
+                    mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+                }
+            };
+
+            if (state.charts.timeOfDay) {
+                state.charts.timeOfDay.updateOptions(options);
+            } else {
+                state.charts.timeOfDay = new ApexCharts(document.querySelector("#timeOfDayChart"), options);
+                state.charts.timeOfDay.render();
+            }
+        }
+
+       
+// Helper function to get color for legend
+function getColorForValue(value, isDarkMode) {
+    const colorScale = d3.scaleSequential()
+        .interpolator(isDarkMode ? d3.interpolateOranges : d3.interpolateBlues)
+        .domain([0, 6]);
+    
+    return colorScale(value);
+}
+
+function processHeatmapData() {
+    const sessionsByDate = {};
+    
+    // Process all non-break sessions
+    Object.values(state.sessions).forEach(session => {
+        if (session.isBreak) return;
+        
+        const dateStr = moment(session.startTime).format('YYYY-MM-DD');
+        const hours = parseFloat(session.duration) / 60; // Convert minutes to hours
+        
+        sessionsByDate[dateStr] = (sessionsByDate[dateStr] || 0) + hours;
+    });
+
+    // Convert to array of {date, value} objects
+    return Object.entries(sessionsByDate).map(([dateStr, value]) => ({
+        date: new Date(dateStr),
+        value: value
+    }));
+}
+
+
+        function renderTrendCharts() {
+            renderDailyTrendChart();
+            renderWeeklyTrendChart();
+            renderMonthlyTrendChart();
+        }
+
+        function renderDailyTrendChart() {
+    const { categories, series } = calculateTrendData('day');
+
+    const options = {
+        series: [{
+            name: 'Study Hours',
+            data: series
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                enabled: false
+            },
+            foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        xaxis: {
+            type: 'datetime',
+            categories: categories,
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Hours',
+                style: {
+                    color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            },
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                formatter: function(val) {
+                    return val.toFixed(2); // Show exactly 2 decimal places
+                }
+            },
+            decimalsInFloat: 2 // Ensure maximum of 2 decimal places
+        },
+        colors: ['#4361ee'],
+        tooltip: {
+            x: {
+                format: 'dd MMM yyyy'
+            },
+            y: {
+                formatter: function (val) {
+                    return val.toFixed(2) + " hours"; // Show 2 decimal places in tooltip
+                }
+            }
+        },
+        theme: {
+            mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+        }
+    };
+
+    if (state.charts.dailyTrend) {
+        state.charts.dailyTrend.updateOptions(options);
+    } else {
+        state.charts.dailyTrend = new ApexCharts(document.querySelector("#dailyTrendChart"), options);
+        state.charts.dailyTrend.render();
+    }
+}
+
+function renderWeeklyTrendChart() {
+    const { categories, series } = calculateTrendData('week');
+
+    const options = {
+        series: [{
+            name: 'Study Hours',
+            data: series
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                enabled: false
+            },
+            foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        xaxis: {
+            categories: categories,
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Hours',
+                style: {
+                    color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            },
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                formatter: function(val) {
+                    return val.toFixed(2); // Show exactly 2 decimal places
+                }
+            },
+            decimalsInFloat: 2 // Ensure maximum of 2 decimal places
+        },
+        colors: ['#4cc9f0'],
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val.toFixed(2) + " hours"; // Show 2 decimal places in tooltip
+                }
+            }
+        },
+        theme: {
+            mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+        }
+    };
+
+    if (state.charts.weeklyTrend) {
+        state.charts.weeklyTrend.updateOptions(options);
+    } else {
+        state.charts.weeklyTrend = new ApexCharts(document.querySelector("#weeklyTrendChart"), options);
+        state.charts.weeklyTrend.render();
+    }
+}
+
+function renderMonthlyTrendChart() {
+    const { categories, series } = calculateTrendData('month');
+
+    const options = {
+        series: [{
+            name: 'Study Hours',
+            data: series
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            zoom: {
+                enabled: false
+            },
+            foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        xaxis: {
+            categories: categories,
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Hours',
+                style: {
+                    color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            },
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                formatter: function(val) {
+                    return val.toFixed(2); // Show exactly 2 decimal places
+                }
+            },
+            decimalsInFloat: 2 // Ensure maximum of 2 decimal places
+        },
+        colors: ['#3f37c9'],
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val.toFixed(2) + " hours"; // Show 2 decimal places in tooltip
+                }
+            }
+        },
+        theme: {
+            mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+        }
+    };
+
+    if (state.charts.monthlyTrend) {
+        state.charts.monthlyTrend.updateOptions(options);
+    } else {
+        state.charts.monthlyTrend = new ApexCharts(document.querySelector("#monthlyTrendChart"), options);
+        state.charts.monthlyTrend.render();
+    }
+}
+
+        function calculateTrendData(granularity) {
+            const filteredSessions = filterSessionsByDate().filter(([id, session]) => !session.isBreak);
+
+            // Group sessions by time period
+            const groups = {};
+            filteredSessions.forEach(([id, session]) => {
+                const date = moment(session.startTime);
+                let key;
+
+                if (granularity === 'day') {
+                    key = date.format('YYYY-MM-DD');
+                } else if (granularity === 'week') {
+                    key = `Week ${date.week()} (${date.startOf('week').format('MMM D')} - ${date.endOf('week').format('MMM D')})`;
+                } else if (granularity === 'month') {
+                    key = date.format('MMM YYYY');
+                }
+
+                if (!groups[key]) {
+                    groups[key] = 0;
+                }
+
+                groups[key] += parseFloat(session.duration) / 60; // Convert to hours
+            });
+
+            // Convert to arrays for chart
+            const categories = Object.keys(groups);
+            const series = Object.values(groups);
+
+            return { categories, series };
+        }
+
+        function renderSubjectComparison() {
+    const subject1Id = elements.compareSubject1.value;
+    const subject2Id = elements.compareSubject2.value;
+
+    if (!subject1Id || !subject2Id) return;
+
+    const subject1 = state.subjects[subject1Id];
+    const subject2 = state.subjects[subject2Id];
+
+    if (!subject1 || !subject2) return;
+
+    // Get sessions for both subjects
+    const subject1Sessions = Object.values(state.sessions).filter(session =>
+        session.subject === subject1Id && !session.isBreak
+    );
+
+    const subject2Sessions = Object.values(state.sessions).filter(session =>
+        session.subject === subject2Id && !session.isBreak
+    );
+
+    // Calculate comparison data
+    const subject1Hours = subject1Sessions.reduce((total, session) => total + (parseFloat(session.duration) / 60), 0);
+    const subject2Hours = subject2Sessions.reduce((total, session) => total + (parseFloat(session.duration) / 60), 0);
+
+    const subject1AvgDuration = subject1Sessions.length > 0 ?
+        subject1Sessions.reduce((total, session) => total + parseFloat(session.duration), 0) / subject1Sessions.length :
+        0;
+
+    const subject2AvgDuration = subject2Sessions.length > 0 ?
+        subject2Sessions.reduce((total, session) => total + parseFloat(session.duration), 0) / subject2Sessions.length :
+        0;
+
+    // Calculate consistency (percentage of weeks with at least one session)
+    const subject1Weeks = new Set();
+    subject1Sessions.forEach(session => {
+        subject1Weeks.add(moment(session.startTime).format('YYYY-WW'));
+    });
+
+    const subject2Weeks = new Set();
+    subject2Sessions.forEach(session => {
+        subject2Weeks.add(moment(session.startTime).format('YYYY-WW'));
+    });
+
+    const totalWeeks1 = moment().diff(moment(subject1.createdAt || new Date()), 'weeks') + 1;
+    const totalWeeks2 = moment().diff(moment(subject2.createdAt || new Date()), 'weeks') + 1;
+
+    const subject1Consistency = totalWeeks1 > 0 ? (subject1Weeks.size / totalWeeks1) * 100 : 0;
+    const subject2Consistency = totalWeeks2 > 0 ? (subject2Weeks.size / totalWeeks2) * 100 : 0;
+
+    // Update comparison cards with proper decimal formatting
+    document.getElementById('totalHours1').textContent = formatDecimal(subject1Hours, 1) + ' hrs';
+    document.getElementById('avgDuration1').textContent = formatDecimal(subject1AvgDuration, 1) + ' mins';
+    document.getElementById('consistency1').textContent = formatDecimal(subject1Consistency, 1) + '%';
+
+    // Create comparison chart
+    const options = {
+        series: [{
+            name: subject1.name,
+            data: [subject1Hours, subject1AvgDuration, subject1Consistency]
+        }, {
+            name: subject2.name,
+            data: [subject2Hours, subject2AvgDuration, subject2Consistency]
+        }],
+        chart: {
+            type: 'bar',
+            height: 350,
+            foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function(val) {
+                return formatDecimal(val, 2); // Show max 2 decimal places when needed
+            }
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: ['Total Hours', 'Avg. Duration (mins)', 'Consistency (%)'],
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                }
+            }
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                formatter: function(val) {
+                    return formatDecimal(val, 2); // Show max 2 decimal places when needed
+                }
+            },
+            decimalsInFloat: 2 // Limit to 2 decimal places
+        },
+        fill: {
+            opacity: 1
+        },
+        colors: [subject1.color || '#4361ee', subject2.color || '#4cc9f0'],
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return formatDecimal(val, 2); // Show max 2 decimal places when needed
+                }
+            }
+        },
+        theme: {
+            mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+        }
+    };
+
+    if (state.charts.subjectComparison) {
+        state.charts.subjectComparison.updateOptions(options);
+    } else {
+        state.charts.subjectComparison = new ApexCharts(document.querySelector("#subjectComparisonChart"), options);
+        state.charts.subjectComparison.render();
+    }
+}
+
+// Helper function to format decimals (shows decimals only when needed, up to specified places)
+function formatDecimal(value, maxDecimals) {
+    // Round to max decimals to avoid floating point issues
+    const rounded = Math.round(value * Math.pow(10, maxDecimals)) / Math.pow(10, maxDecimals);
+    
+    // Convert to string and remove trailing zeros and decimal point if not needed
+    return rounded.toFixed(maxDecimals).replace(/\.?0+$/, '');
+}
+        function renderSubjectProgressChart() {
+            if (!state.selectedSubjectId) return;
+
+            const subjectSessions = Object.values(state.sessions).filter(session =>
+                session.subject === state.selectedSubjectId && !session.isBreak
+            ).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+            if (subjectSessions.length === 0) return;
+
+            // Calculate cumulative hours over time
+            let cumulativeHours = 0;
+            const data = subjectSessions.map(session => {
+                cumulativeHours += parseFloat(session.duration) / 60;
+                return {
+                    x: new Date(session.startTime),
+                    y: cumulativeHours
+                };
+            });
+
+            const options = {
+                series: [{
+                    name: 'Cumulative Hours',
+                    data: data
+                }],
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    zoom: {
+                        enabled: false
+                    },
+                    foreColor: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Cumulative Study Hours',
+                        style: {
+                            color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            colors: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529'
+                        }
+                    }
+                },
+                colors: [state.subjects[state.selectedSubjectId].color || '#4361ee'],
+                tooltip: {
+                    x: {
+                        format: 'dd MMM yyyy'
+                    },
+                    y: {
+                        formatter: function (val) {
+                            return val.toFixed(1) + " hours";
+                        }
+                    }
+                },
+                theme: {
+                    mode: document.body.classList.contains('dark-mode') ? 'dark' : 'light'
+                }
+            };
+
+            if (state.charts.subjectProgress) {
+                state.charts.subjectProgress.updateOptions(options);
+            } else {
+                state.charts.subjectProgress = new ApexCharts(document.querySelector("#subjectProgressChart"), options);
+                state.charts.subjectProgress.render();
+            }
+        }
+
+        function updateDashboardStats() {
+            // Total study time (excluding breaks)
+            const totalHours = Object.values(state.sessions)
+                .filter(session => !session.isBreak)
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+            elements.totalStudyTime.textContent = totalHours.toFixed(1);
+
+            // Weekly study time
+            const weeklyHours = Object.values(state.sessions)
+                .filter(session =>
+                    moment(session.startTime).isAfter(moment().subtract(7, 'days')) &&
+                    !session.isBreak
+                )
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+            elements.weeklyStudyTime.textContent = weeklyHours.toFixed(1);
+
+            // Daily study time
+            const dailyHours = Object.values(state.sessions)
+                .filter(session =>
+                    moment(session.startTime).isAfter(moment().startOf('day')) &&
+                    !session.isBreak
+                )
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+            elements.dailyStudyTime.textContent = dailyHours.toFixed(1);
+
+            // Sessions completed (excluding breaks)
+            const sessionsCount = Object.values(state.sessions)
+                .filter(session => !session.isBreak)
+                .length;
+            elements.sessionsCompleted.textContent = sessionsCount;
+
+            // Calculate streaks
+            calculateStreaks();
+
+            // Calculate weekly goal progress
+            calculateWeeklyGoalProgress();
+        }
+
+        function calculateStreaks() {
+            // Get all study dates (without breaks)
+            const studyDates = Object.values(state.sessions)
+                .filter(session => !session.isBreak)
+                .map(session => moment(session.startTime).format('YYYY-MM-DD'));
+
+            const uniqueDates = [...new Set(studyDates)].sort();
+
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let tempStreak = 0;
+
+            // Check if today has a session
+            const today = moment().format('YYYY-MM-DD');
+            const hasToday = uniqueDates.includes(today);
+
+            // Calculate streaks
+            let prevDate = null;
+            for (const dateStr of uniqueDates) {
+                const date = moment(dateStr);
+
+                if (prevDate) {
+                    const diffDays = date.diff(prevDate, 'days');
+
+                    if (diffDays === 1) {
+                        tempStreak++;
+                    } else if (diffDays > 1) {
+                        longestStreak = Math.max(longestStreak, tempStreak);
+                        tempStreak = 0;
+                    }
+                } else {
+                    tempStreak = 1;
+                }
+
+                prevDate = date;
+            }
+
+            longestStreak = Math.max(longestStreak, tempStreak);
+
+            // Current streak logic
+            if (uniqueDates.length > 0) {
+                const lastDate = moment(uniqueDates[uniqueDates.length - 1]);
+                const today = moment();
+
+                const diffDays = today.diff(lastDate, 'days');
+
+                if (diffDays === 0) {
+                    // Studied today
+                    currentStreak = tempStreak;
+                } else if (diffDays === 1) {
+                    // Studied yesterday
+                    currentStreak = tempStreak;
+                } else {
+                    // Gap of more than 1 day, streak is broken
+                    currentStreak = 0;
+                }
+            }
+
+            // Update UI
+            elements.currentStreak.textContent = `${currentStreak} day${currentStreak !== 1 ? 's' : ''}`;
+            elements.longestStreak.textContent = `${longestStreak} day${longestStreak !== 1 ? 's' : ''}`;
+
+            // Calculate streak trend (compared to previous streak)
+            const previousStreak = localStorage.getItem('previousStreak') || 0;
+            const streakDiff = currentStreak - previousStreak;
+
+            if (streakDiff > 0) {
+                elements.streakTrend.textContent = `+${streakDiff}`;
+                elements.streakTrend.classList.add('bg-success');
+                elements.streakTrend.classList.remove('bg-danger', 'bg-warning');
+            } else if (streakDiff < 0) {
+                elements.streakTrend.textContent = streakDiff;
+                elements.streakTrend.classList.add('bg-danger');
+                elements.streakTrend.classList.remove('bg-success', 'bg-warning');
+            } else {
+                elements.streakTrend.textContent = '0';
+                elements.streakTrend.classList.add('bg-warning');
+                elements.streakTrend.classList.remove('bg-success', 'bg-danger');
+            }
+
+            // Save current streak for next comparison
+            localStorage.setItem('previousStreak', currentStreak);
+        }
+
+        function calculateWeeklyGoalProgress() {
+            if (Object.keys(state.subjects).length === 0) return;
+
+            // Calculate total weekly goal across all subjects
+            const totalWeeklyGoal = Object.values(state.subjects)
+                .reduce((total, subject) => total + subject.weeklyGoal, 0);
+
+            // Calculate actual study time this week
+            const weeklyHours = Object.values(state.sessions)
+                .filter(session =>
+                    moment(session.startTime).isAfter(moment().subtract(7, 'days')) &&
+                    !session.isBreak
+                )
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+
+            const progressPercentage = Math.min((weeklyHours / totalWeeklyGoal) * 100, 100);
+
+            // Update UI
+            elements.weeklyGoalProgress.style.width = `${progressPercentage}%`;
+            elements.weeklyGoalText.textContent = `${progressPercentage.toFixed(1)}% of weekly goal (${weeklyHours.toFixed(1)}/${totalWeeklyGoal} hrs)`;
+
+            // Update efficiency gauge
+            renderEfficiencyGauge(weeklyHours, totalWeeklyGoal);
+        }
+
+        function renderEfficiencyGauge(actualHours, targetHours) {
+            const efficiency = targetHours > 0 ? (actualHours / targetHours) * 100 : 0;
+
+            const options = {
+                series: [efficiency],
+                chart: {
+                    height: 150,
+                    type: 'radialBar',
+                },
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -135,
+                        endAngle: 135,
+                        hollow: {
+                            margin: 0,
+                            size: '70%',
+                        },
+                        dataLabels: {
+                            name: {
+                                offsetY: -10,
+                                color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529',
+                                fontSize: '13px'
+                            },
+                            value: {
+                                color: document.body.classList.contains('dark-mode') ? '#f8f9fa' : '#212529',
+                                fontSize: '30px',
+                                show: true
+                            }
+                        },
+                        track: {
+                            background: document.body.classList.contains('dark-mode') ? '#4a5568' : '#e9ecef',
+                            strokeWidth: '97%',
+                            margin: 5,
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        shadeIntensity: 0.15,
+                        inverseColors: false,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 50, 65, 91]
+                    },
+                },
+                stroke: {
+                    dashArray: 4
+                },
+                labels: ['Weekly Goal Progress'],
+                colors: [efficiency >= 100 ? '#4bb543' : efficiency >= 75 ? '#f8961e' : '#f94144']
+            };
+
+            if (state.charts.efficiencyGauge) {
+                state.charts.efficiencyGauge.updateOptions(options);
+            } else {
+                state.charts.efficiencyGauge = new ApexCharts(document.querySelector("#efficiencyGauge"), options);
+                state.charts.efficiencyGauge.render();
+            }
+        }
+
+        function exportToCSV() {
+            const filteredSessions = filterSessionsByDate();
+            let csv = 'Subject,Date,Duration (mins),Tags,Notes\n';
+
+            filteredSessions.forEach(([id, session]) => {
+                const subject = state.subjects[session.subject] || { name: 'Unknown' };
+                const tags = session.tags || '';
+                const notes = session.notes ? session.notes.replace(/"/g, '""') : '';
+
+                csv += `"${subject.name}","${moment(session.startTime).format('MMM D, YYYY h:mm A')}",${session.duration},"${tags}","${notes}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `studysmart_sessions_${moment().format('YYYYMMDD')}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            elements.exportModal.hide();
+        }
+
+        function exportToJSON() {
+            const filteredSessions = filterSessionsByDate();
+            const sessionsData = filteredSessions.map(([id, session]) => {
+                const subject = state.subjects[session.subject] || { name: 'Unknown' };
+                return {
+                    subject: subject.name,
+                    date: moment(session.startTime).format('MMM D, YYYY h:mm A'),
+                    duration: session.duration,
+                    tags: session.tags,
+                    notes: session.notes,
+                    isBreak: session.isBreak || false
+                };
+            });
+
+            const json = JSON.stringify(sessionsData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `studysmart_sessions_${moment().format('YYYYMMDD')}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            elements.exportModal.hide();
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add title
+            doc.setFontSize(18);
+            doc.text('StudySmart Sessions Report', 105, 15, { align: 'center' });
+
+            // Add date range
+            doc.setFontSize(12);
+            doc.text(
+                `Date Range: ${moment(state.dateRange.start).format('MMM D, YYYY')} - ${moment(state.dateRange.end).format('MMM D, YYYY')}`,
+                105,
+                25,
+                { align: 'center' }
+            );
+
+            // Add summary stats
+            doc.setFontSize(12);
+            doc.text('Summary Statistics', 14, 40);
+            doc.line(14, 42, 60, 42);
+
+            const totalHours = Object.values(state.sessions)
+                .filter(session =>
+                    new Date(session.startTime) >= state.dateRange.start &&
+                    new Date(session.startTime) <= state.dateRange.end &&
+                    !session.isBreak
+                )
+                .reduce((total, session) => total + parseFloat(session.duration), 0) / 60;
+
+            const sessionCount = Object.values(state.sessions)
+                .filter(session =>
+                    new Date(session.startTime) >= state.dateRange.start &&
+                    new Date(session.startTime) <= state.dateRange.end &&
+                    !session.isBreak
+                )
+                .length;
+
+            doc.text(`Total Study Hours: ${totalHours.toFixed(1)}`, 14, 50);
+            doc.text(`Total Sessions: ${sessionCount}`, 14, 58);
+
+            // Add subject distribution
+            doc.setFontSize(12);
+            doc.text('Subject Distribution', 14, 75);
+            doc.line(14, 77, 60, 77);
+
+            const subjectHours = {};
+            Object.values(state.sessions)
+                .filter(session =>
+                    new Date(session.startTime) >= state.dateRange.start &&
+                    new Date(session.startTime) <= state.dateRange.end &&
+                    !session.isBreak
+                )
+                .forEach(session => {
+                    const subject = state.subjects[session.subject] || { name: 'Unknown' };
+                    subjectHours[subject.name] = (subjectHours[subject.name] || 0) + (parseFloat(session.duration) / 60);
+                });
+
+            let yPos = 85;
+            Object.entries(subjectHours).forEach(([subject, hours], index) => {
+                if (yPos > 250) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                doc.text(`${subject}: ${hours.toFixed(1)} hours`, 14, yPos);
+                yPos += 8;
+            });
+
+            // Save the PDF
+            doc.save(`studysmart_report_${moment().format('YYYYMMDD')}.pdf`);
+            elements.exportModal.hide();
+        }
+
+        function exportToExcel() {
+            const filteredSessions = filterSessionsByDate();
+            const sessionsData = filteredSessions.map(([id, session]) => {
+                const subject = state.subjects[session.subject] || { name: 'Unknown' };
+                return {
+                    Subject: subject.name,
+                    Date: moment(session.startTime).format('MMM D, YYYY h:mm A'),
+                    'Duration (mins)': session.duration,
+                    Tags: session.tags,
+                    Notes: session.notes,
+                    Type: session.isBreak ? 'Break' : 'Study'
+                };
+            });
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(sessionsData);
+            XLSX.utils.book_append_sheet(wb, ws, 'Sessions');
+
+            // Export to file
+            XLSX.writeFile(wb, `studysmart_sessions_${moment().format('YYYYMMDD')}.xlsx`);
+            elements.exportModal.hide();
+        }
+    </script>
+</body>
+
+</html>
