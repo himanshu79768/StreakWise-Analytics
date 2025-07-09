@@ -58,6 +58,8 @@
             padding-right: 10px;
             color: #0c0c0c;
             border-color: none;
+            outline: none;
+            box-shadow: none;
         }
 
         .dark-mode .navbar-brand {
@@ -95,6 +97,62 @@
             border-radius: 12px 12px 0 0 !important;
             padding: 16px 20px;
         }
+
+/* Adjust the Performance Metrics section layout */
+#efficiencyGauge {
+    height: 150px; /* Keep gauge height */
+    margin-top: 15px;
+}
+
+/* Style for the Weekly Goal Progress card */
+#weeklyGoalProgress {
+    height: 8px; /* Make progress bar slightly thicker */
+}
+
+/* Adjust card heights in Performance Metrics */
+#trends .card-body .card {
+    height: calc(100% - 20px); /* Subtract padding */
+    margin-bottom: 15px;
+}
+
+/* Specific adjustment for Weekly Goal Progress card */
+#trends .card-body .card:has(#weeklyGoalProgress) {
+    height: auto; /* Let it size naturally */
+    margin-bottom: 15px;
+}
+
+/* Make the progress text smaller */
+#weeklyGoalText {
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+/* Adjust the grid layout in Performance Metrics */
+#trends .row > .col-md-6 .card-body .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#trends .row > .col-md-6 .card-body .row > .col-md-6 {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Make sure the cards stretch to fill available space */
+#trends .row > .col-md-6 .card-body .row > .col-md-6 .card {
+    flex: 1;
+}
+
+/* Targets ONLY the Study Efficiency card */
+#trends .card-body > .card:has(#efficiencyGauge) {
+    height: 250px; /* Adjust this value as needed */
+}
+
+/* Optional: Adjust the gauge height inside the card */
+#efficiencyGauge {
+    height: 180px; /* Keeps the gauge visually balanced */
+    margin-top: 10px;
+}
 
         .dark-mode .card-header {
             background-color: rgba(67, 97, 238, 0.2);
@@ -417,6 +475,37 @@
             z-index: 2000;
         }
 
+        :root {
+  --footer-bg: #ffffff;         /* Slate-900 */
+  --footer-text: #000000;       /* Gray-200 */
+  --footer-hover: #757575;      /* Sky-400 */
+  
+}
+
+.copyright-footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: 1.2rem 2rem;
+  text-align: center;
+  font-size: 0.90rem;
+  letter-spacing: 0.6px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+  margin-top: 12px;
+}
+
+
+.copyright-footer p {
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.copyright-footer p:hover {
+  color: var(--footer-hover);
+  cursor: default;
+}
+
         .btn-outline-primary {
             background-color: #000000;
             color: #ffffff;
@@ -426,7 +515,14 @@
             
         }
 
-         .btn-outline-primary.view-session-btn {
+
+        .btn-outline-primary:hover {
+            background-color: #2b2b2b;
+            color: #d8d8d8;
+            border-color: #0a0a0a;
+        }
+
+        .btn-outline-primary.view-session-btn {
             background-color: #3a56d1;
             color: #ffffff;
             border-color: #293e9e;
@@ -440,13 +536,6 @@
             border-color: #526eeb;
             color: #ffffff;
             
-        }
-
-
-        .btn-outline-primary:hover {
-            background-color: #2b2b2b;
-            color: #d8d8d8;
-            border-color: #0a0a0a;
         }
 
         .loading-content {
@@ -471,6 +560,60 @@
             flex: 1;
             min-width: 200px;
         }
+
+        .navbar-toggler {
+            border: none;
+            box-shadow: none;
+            outline: none;
+            background-color: transparent;
+            
+        }
+
+        .navbar-toggler:hover{
+            color: #000000;
+        }
+
+        .navbar-toggler:focus,
+        .navbar-toggler:active
+        .navbar-toggler:focus-visible {
+            outline: none;
+            box-shadow: none;
+            border: none;
+
+        }
+
+        #deleteSubjectBtn{
+            background-color: #e20606;
+            color: #ffffff;
+            border-color: #e20606;
+            border-radius: 10px;
+            font-size: 13px;
+            
+        }
+
+
+        #deleteSubjectBtn:hover {
+            color: #d8d8d8;
+        }
+        
+        #timeframeWeekBtn{
+            margin-right: 5px;
+            border-radius: 10px;
+        }
+
+        #timeframeMonthBtn{
+            border-radius: 10px;
+        }
+
+        #timeframeYearBtn{
+            margin-left: 5px;
+            border-radius: 10px;
+        }
+
+
+
+
+        
 
         @media (max-width: 768px) {
             .stats-value {
@@ -866,13 +1009,19 @@
                                     <h6 class="card-title">Study Efficiency</h6>
                                     <div id="efficiencyGauge" class="chart-container" style="height: 150px;"></div>
                                 </div>
+                            
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <footer class="copyright-footer">
+                    <p>&copy; 2025 StreakWise by Himanshu. All rights reserved.</p>
+                </footer>
         </section>
+        
     </div>
+          
 
     <!-- Add/Edit Subject Modal -->
     <div class="modal fade" id="subjectModal" tabindex="-1" aria-hidden="true">
@@ -967,11 +1116,13 @@
                         <button class="btn btn-outline-primary data-export-btn" id="exportExcelBtn">
                             <i class="bi bi-file-excel"></i> Excel
                         </button>
+    
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
+              
             </div>
         </div>
     </div>
